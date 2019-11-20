@@ -1,0 +1,12 @@
+---
+title: "Salamanders!"
+author: "Allison Hacker and Cameryn Brock"
+date: "11/20/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Here is an R Markdown document!
