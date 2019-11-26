@@ -49,13 +49,13 @@ channel_class <- salamanders %>%
                               unittype == "P" ~ "Pool",
                               unittype == "SC" ~ "Side Channel")) %>% 
   group_by(section, unittype) %>% 
-  summarize(n = n()) %>% 
-  pivot_wider(names_from = section, values_from = n)
+  summarize(n = n())
   
-    
+ channel_class_wide <- channel_class %>% 
+   pivot_wider(names_from = section, values_from = n)
 
-channel_class_props <- channel_class %>% 
-  adorn_percentages(denominator = "row") %>% 
+channel_class_props <- channel_class_wide %>% 
+  adorn_percentages(denominator = "col") %>% 
   adorn_pct_formatting(digits = 1) %>% 
   adorn_ns(position = "front")
 
@@ -68,3 +68,13 @@ kable(channel_class_props,
   kable_styling(bootstrap_options = c("hover"))
 ```
 
+
+```{r}
+# Part C: ANOVA for effect of forest condition on preferred channel classification
+channel_counts <- channel_class_wide %>% 
+  select(-unittype)
+
+channel_chi <- chisq.test(channel_counts)
+channel_chi
+```
+ There is no significant association between creek section and the channel classification where salamanders are found.
