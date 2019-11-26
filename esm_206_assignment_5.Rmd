@@ -7,6 +7,31 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+
+# Attache packages
+library(tidyverse)
+library(janitor)
+
+# Read in data
+salamanders <- read_csv("mack_creek_vertebrates.csv") %>% 
+  clean_names() %>% 
+  filter(species == "DITE")
 ```
 
-Here is an R Markdown document!
+### Introduction
+### Data and Methods
+### Results
+
+```{r}
+# Part A : Annual salamander counts by year
+
+salamander_count <- salamanders %>% 
+  group_by(section, year) %>% 
+  summarize(n = n())
+
+ggplot(salamander_count, aes(x = year, y = n))+
+  geom_line(aes(color = section))+
+  geom_point(aes(color = section))
+
+```
+
