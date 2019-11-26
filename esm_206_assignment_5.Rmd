@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = FALSE)
 # Attache packages
 library(tidyverse)
 library(janitor)
+library(kableExtra)
 
 # Read in data
 salamanders <- read_csv("mack_creek_vertebrates.csv") %>% 
@@ -31,7 +32,39 @@ salamander_count <- salamanders %>%
 
 ggplot(salamander_count, aes(x = year, y = n))+
   geom_line(aes(color = section))+
-  geom_point(aes(color = section))
+  geom_point(aes(color = section))+
+  theme_minimal()+
+  labs(x = "Year", y = "Number of Salamanders")
 
+```
+
+
+```{r}
+# Part B: 2017 salamander counts by channel classification
+
+channel_class <- salamanders %>% 
+  filter(year == 2017,
+         unittype != "IP") %>% 
+  mutate(unittype = case_when(unittype == "C" ~ "Cascade",
+                              unittype == "P" ~ "Pool",
+                              unittype == "SC" ~ "Side Channel")) %>% 
+  group_by(section, unittype) %>% 
+  summarize(n = n()) %>% 
+  pivot_wider(names_from = section, values_from = n)
+  
+    
+
+channel_class_props <- channel_class %>% 
+  adorn_percentages(denominator = "row") %>% 
+  adorn_pct_formatting(digits = 1) %>% 
+  adorn_ns(position = "front")
+
+kable(channel_class_props, 
+      align = "c",
+      col.names = c("Channel Classification",
+                    "Clear Cut",
+                    "Old Growth")
+      ) %>% 
+  kable_styling(bootstrap_options = c("hover"))
 ```
 
