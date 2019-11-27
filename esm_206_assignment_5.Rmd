@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(janitor)
 library(kableExtra)
+library(effsize)
 
 # Read in data
 salamanders <- read_csv("mack_creek_vertebrates.csv") %>% 
@@ -23,6 +24,7 @@ salamanders <- read_csv("mack_creek_vertebrates.csv") %>%
 ### Data and Methods
 ### Results
 
+##### 1. Salamander Abundance in forested versus logged sections of Mack Creek
 ```{r}
 # Part A : Annual salamander counts by year
 
@@ -34,11 +36,24 @@ ggplot(salamander_count, aes(x = year, y = n))+
   geom_line(aes(color = section))+
   geom_point(aes(color = section))+
   theme_minimal()+
-  labs(x = "Year", y = "Number of Salamanders")
+  labs(x = "Year", y = "Number of Salamanders")+
+  scale_color_manual(
+    name = "Creek Section", 
+    labels = c("Clear Cut", "Old Growth"),
+    values = c("burlywood3", "darkgreen")
+    )+
+  scale_x_continuous(breaks = seq(1993,2017,3), expand = c(0.02,0))+
+  scale_y_continuous(limits = c(0,400), breaks = seq(0,400,100), expand = c(0,0))+
+  theme(panel.grid.minor = element_blank())
 
 ```
+**Figure 1.** Pacific giant salamander abundance (1993-2017). The annual number of observations from an old growth coniferous forest (green) and a clear cut forest (brown) are shown for all years that observations were recorded.
 
+Trends in salamander abundance between 1993 and 2017 were similar for both sections of Mack Creek. Until 2014, abundance of Pacific giant salamanders was greater in rach of Mack Creek in an old growth forest than in the section that flowed through a clear cut forest. From 2015 to 2017, salamander abundance was slightly higher in the clear cut reach than the forested reach.
 
+##### 2. Salamander abundance based on channel classification in 2017
+
+**Table 1.** Pacific giant salamander abundance for different channel classifications in 2017. Number of observations and proportions are shown for clear cut and old growth sections of Mack Creek.
 ```{r}
 # Part B: 2017 salamander counts by channel classification
 
@@ -70,11 +85,57 @@ kable(channel_class_props,
 
 
 ```{r}
-# Part C: ANOVA for effect of forest condition on preferred channel classification
+# Part C: Chi-squared test for effect of forest condition on preferred channel classification
 channel_counts <- channel_class_wide %>% 
   select(-unittype)
 
 channel_chi <- chisq.test(channel_counts)
-channel_chi
+#channel_chi
 ```
- There is no significant association between creek section and the channel classification where salamanders are found.
+There is no significant effect of forest condition (clear cut and old growth) and the channel classification (cascade, pool, or side channel) where salamanders are found ($\chi^2$ (`r channel_chi$parameter`) = `r round(channel_chi$statistic, 2)`, p = `r round(channel_chi$p.value,3)`). 
+
+However, salamander abundance differed among the three channel classifications. In both clear cut and old growth sections, cascades had the greatest number of salamanders (247 (67.1%)) and 201 (62.8%)), followed by side channels (90 (24.5%)) and 74 (23.1%)). Pools had the fewest number of salamanders for clear cut (31 (8.4%)) and old growth (45 (14.1%)) creek sections.
+
+#### Salamander weight
+```{r}
+cc_weight <- salamanders %>% 
+  filter(year == 2017, section == "CC") %>% 
+  select(section, weight)
+
+og_weight <- salamanders %>% 
+  filter(year == 2017, section == "OG") %>% 
+  select(section, weight)
+
+# means
+mean_cc <- mean(cc_weight$weight)
+mean_og <- mean(og_weight$weight, na.rm = TRUE)
+
+# exploratory data viz
+ggplot() +
+  geom_histogram(data = cc_weight, aes(x = weight),
+                 fill = "red", 
+                 bins = 50) +
+  geom_histogram(data = og_weight, aes(x = weight),
+                 fill = "blue",
+                 bins = 50)
+
+ggplot(data = cc_weight, aes(sample = weight))+
+  geom_qq()
+ggplot(data = og_weight, aes(sample = weight))+
+  geom_qq()
+
+# data don't seem to be normally distributed, so probably shouldn't use the t-test?
+
+# t-test
+weight_ttest <- t.test(cc_weight$weight, og_weight$weight)
+weight_ttest
+
+# Mann-Whitney U
+weight_mwu <- wilcox.test(cc_weight$weight, og_weight$weight)
+weight_mwu
+
+# effect size
+section_weight_es <- cohen.d(cc_weight$weight, og_weight$weight, na.rm = TRUE)
+section_weight_es
+```
+
