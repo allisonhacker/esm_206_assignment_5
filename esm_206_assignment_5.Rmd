@@ -24,7 +24,7 @@ salamanders <- read_csv("mack_creek_vertebrates.csv") %>%
 ### Data and Methods
 ### Results
 
-##### 1. Salamander Abundance in forested versus logged sections of Mack Creek
+#### 1. Salamander Abundance in forested versus logged sections of Mack Creek
 ```{r}
 # Part A : Annual salamander counts by year
 
@@ -47,11 +47,12 @@ ggplot(salamander_count, aes(x = year, y = n))+
   theme(panel.grid.minor = element_blank())
 
 ```
+
 **Figure 1.** Pacific giant salamander abundance (1993-2017). The annual number of observations from an old growth coniferous forest (green) and a clear cut forest (brown) are shown for all years that observations were recorded.
 
 Trends in salamander abundance between 1993 and 2017 were similar for both sections of Mack Creek. Until 2014, abundance of Pacific giant salamanders was greater in rach of Mack Creek in an old growth forest than in the section that flowed through a clear cut forest. From 2015 to 2017, salamander abundance was slightly higher in the clear cut reach than the forested reach.
 
-##### 2. Salamander abundance based on channel classification in 2017
+#### 2. Salamander abundance based on channel classification in 2017
 
 **Table 1.** Pacific giant salamander abundance for different channel classifications in 2017. Number of observations and proportions are shown for clear cut and old growth sections of Mack Creek.
 ```{r}
