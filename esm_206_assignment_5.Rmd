@@ -1,5 +1,5 @@
 ---
-title: "Salamanders!"
+title: "Effect of forest condition on Pacific giant salamander populations"
 author: "Allison Hacker and Cameryn Brock"
 date: "11/20/2019"
 output: html_document
@@ -21,6 +21,11 @@ salamanders <- read_csv("mack_creek_vertebrates.csv") %>%
 ```
 
 ### Introduction
+
+The Pacific giant salamander (*Dicamptodon tenebrosus*) is the largest amphibian species in the Pacific Northwest (Figure 1). Although it is not a threatened species, it relies on cold, clean stream habitat for food and reproduction ("Pacific Giant Salamander" n.d.). Logging threatens this habitat by removing canopy cover and increasing soil erosion, which result in warmer water and increased suspended sediment. Due to their sensitivity to such environmental changes, amphibian populations can be used as an indicator of riparian ecosystem health (Welsh and Ollivier, 1998). Pacific giant salamander populations have been monitored in both clear cut and intact old growth forest in Oregon State's H.J. Andrews Experimental Forest since 1993. In this study, we compare salamander abundance and weight in various channel types to explore the effect of logging on salamander populations.
+
+![**Figure 1**. Pacific giant salamander (*Dicamptodon tenebrosus*). Credit: [Jeffery Marsten *Wikimedia*](https://commons.wikimedia.org/wiki/File:Dicamptodon_tenebrosus_2.JPG)](pacific_giant_salamander.jpg)
+
 ### Data and Methods
 ### Results
 
@@ -93,9 +98,10 @@ channel_counts <- channel_class_wide %>%
 channel_chi <- chisq.test(channel_counts)
 #channel_chi
 ```
-There is no significant effect of forest condition (clear cut and old growth) and the channel classification (cascade, pool, or side channel) where salamanders are found ($\chi^2$ (`r channel_chi$parameter`) = `r round(channel_chi$statistic, 2)`, p = `r round(channel_chi$p.value,3)`). 
 
-However, salamander abundance differed among the three channel classifications. In both clear cut and old growth sections, cascades had the greatest number of salamanders (247 (67.1%)) and 201 (62.8%)), followed by side channels (90 (24.5%)) and 74 (23.1%)). Pools had the fewest number of salamanders for clear cut (31 (8.4%)) and old growth (45 (14.1%)) creek sections.
+Salamander abundance differed among the three channel classifications. In both clear cut and old growth sections, cascades had the greatest number of salamanders (247 (67.1%)) and 201 (62.8%)), followed by side channels (90 (24.5%)) and 74 (23.1%)). Pools had the fewest number of salamanders for clear cut (31 (8.4%)) and old growth (45 (14.1%)) creek sections.
+
+However, there is no significant effect of forest condition (clear cut and old growth) and the channel classification (cascade, pool, or side channel) where salamanders are found ($\chi^2$ (`r channel_chi$parameter`) = `r round(channel_chi$statistic, 2)`, p = `r round(channel_chi$p.value,3)`).
 
 #### Salamander weight
 ```{r}
@@ -140,3 +146,13 @@ section_weight_es <- cohen.d(cc_weight$weight, og_weight$weight, na.rm = TRUE)
 section_weight_es
 ```
 
+
+### Summary
+
+### References
+
+**Gregory S. V. 2016.** Aquatic Vertebrate Population Study in Mack Creek, Andrews Experimental Forest, 1987 to present. Environmental Data Initiative. https://doi.org/10.6073/pasta/5de64af9c11579266ef20da2ff32f702. Dataset accessed 11/30/2019.
+
+**“Pacific Giant Salamander.” (n.d.).** Oregon Wild, oregonwild.org/wildlife/pacific-giant-salamander.
+
+**Welsh, Hartwell H., Jr.; Ollivier, L.M. 1998.** Stream amphibians as indicators of ecosystem stress: a case study from California''s redwoods. Ecological Applications 8(4):1118-1132
