@@ -8,7 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
-# Attache packages
+# Attach packages
 library(tidyverse)
 library(janitor)
 library(kableExtra)
@@ -103,8 +103,10 @@ Salamander abundance differed among the three channel classifications. In both c
 
 However, there is no significant effect of forest condition (clear cut and old growth) and the channel classification (cascade, pool, or side channel) where salamanders are found ($\chi^2$ (`r channel_chi$parameter`) = `r round(channel_chi$statistic, 2)`, p = `r round(channel_chi$p.value,3)`).
 
-#### Salamander weight
+#### 3. Salamander weight based in clear cut and old growth forest in 2017
+
 ```{r}
+
 cc_weight <- salamanders %>% 
   filter(year == 2017, section == "CC") %>% 
   select(section, weight)
@@ -144,6 +146,61 @@ weight_mwu
 # effect size
 section_weight_es <- cohen.d(cc_weight$weight, og_weight$weight, na.rm = TRUE)
 section_weight_es
+```
+
+#### 4. Salamander weight based on channel classification in 2017
+
+```{r}
+
+library(ggbeeswarm)
+library(ggridges)
+
+channel_weight <- salamanders %>% 
+  filter(year == "2017",
+         unittype %in% c("C", "P", "SC")) %>% 
+  select(unittype, weight, year) %>% 
+  na.omit()
+
+# Labels to title facets
+
+channel_labels <- c(C = "Cascade",
+                    P = "Pool",
+                    SC = "Side Channel")
+
+# Density plot
+
+ggplot(channel_weight, aes(x = weight)) +
+  geom_density(aes(fill = unittype,
+                   color = unittype),
+               alpha = 0.6,
+               show.legend = FALSE) +
+  facet_wrap(~unittype,
+             nrow = 3,
+             labeller = labeller(unittype = channel_labels)) + 
+  scale_color_manual(values = c("darkslategray2", "mediumturquoise", "lightseagreen")) +
+  scale_fill_manual(values = c("darkslategray2", "mediumturquoise", "lightseagreen")) +
+  theme_minimal() + 
+  theme(panel.grid.minor = element_blank()) +
+  labs(x = "Weight (g)",
+       y = "Density")
+
+# Beeswarm plot
+
+ggplot(channel_weight, aes(x = weight)) +
+  geom_density(aes(fill = unittype,
+                   color = unittype),
+               alpha = 0.6,
+               show.legend = FALSE) +
+  facet_wrap(~unittype,
+             nrow = 3,
+             labeller = labeller(unittype = channel_labels)) + 
+  scale_color_manual(values = c("darkslategray2", "mediumturquoise", "lightseagreen")) +
+  scale_fill_manual(values = c("darkslategray2", "mediumturquoise", "lightseagreen")) +
+  theme_minimal() + 
+  theme(panel.grid.minor = element_blank()) +
+  labs(x = "Weight (g)",
+       y = "Density")
+
 ```
 
 
