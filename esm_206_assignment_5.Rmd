@@ -158,7 +158,7 @@ channel_weight <- salamanders %>%
   filter(year == "2017",
          unittype %in% c("C", "P", "SC")) %>% 
   select(unittype, weight, year) %>% 
-  na.omit()
+  na.omit() 
 
 # Explore data by channel classification
 
@@ -166,7 +166,7 @@ channel_weight_summary <- channel_weight %>%
   group_by(unittype) %>% 
   summarize(mean = mean(weight),
             median = median(weight),
-            count = n())
+            count = n()) 
 
 # Labels to title facets
 
@@ -174,51 +174,35 @@ channel_labels <- c(C = "Cascade",
                     P = "Pool",
                     SC = "Side Channel")
 
-# Density plot
-
-ggplot(channel_weight, aes(x = weight)) +
-  geom_density(aes(fill = unittype,
-                   color = unittype),
-               alpha = 0.6,
-               show.legend = FALSE) +
-  facet_wrap(~unittype,
-             nrow = 3,
-             labeller = labeller(unittype = channel_labels)) + 
-  scale_color_manual(values = c("mediumturquoise", "lightseagreen", "seagreen4")) +
-  scale_fill_manual(values = c("mediumturquoise", "lightseagreen", "seagreen4")) +
-  theme_minimal() + 
-  theme(panel.grid.minor = element_blank()) +
-  labs(x = "Weight (g)",
-       y = "Density")
-
-```
-
-
-```{r}
-
-# Beeswarm plot
+# Violin/box plot
 
 ggplot(channel_weight, aes(y = weight,
-                           x = unittype)) +
-  geom_jitter(aes(color = unittype),
-              alpha = 0.6,
-               show.legend = FALSE,
-              width = 0.1) +
+                           x = fct_reorder(unittype, weight, median))) +
   geom_violin(aes(color = unittype,
                   fill = unittype),
                alpha = 0.5,
                show.legend = FALSE) +
-  scale_color_manual(values = c("darkslategray4", "steelblue4", "royalblue3")) +
-  scale_fill_manual(values = c("darkslategray4", "steelblue4", "royalblue3")) +
+  geom_boxplot(aes(color = unittype),
+               show.legend = FALSE,
+               alpha = 0.8,
+               width = 0.14) +
+  scale_color_manual(values = c("steelblue4","darkslategray4", "royalblue3")) +
+  scale_fill_manual(values = c("steelblue4", "darkslategray4", "royalblue3")) +
   theme_minimal() + 
   theme(panel.grid.minor = element_blank()) +
   labs(y = "Weight (g)",
        x = "Channel Classification") +
   coord_flip() +
   scale_x_discrete(labels = c("Cascade", "Pool", "Side Channel"))
-  
 
 ```
+
+```{r}
+
+channel_weight_summary
+
+```
+
 
 
 ### Summary
