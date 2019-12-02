@@ -107,7 +107,7 @@ However, there is no significant effect of forest condition (clear cut and old g
 
 #### 3. Salamander weight based in clear cut and old growth forest in 2017
 
-```{r}
+```{r, include = FALSE}
 
 cc_weight <- salamanders %>% 
   filter(year == 2017, section == "CC") %>% 
@@ -169,7 +169,8 @@ channel_weight_summary <- channel_weight %>%
   summarize(mean = mean(weight),
             median = median(weight),
             count = n(),
-            sd = sd(weight)) 
+            sd = sd(weight),
+            se = sd(weight) / sqrt(n()))
 
 # Labels to title facets
 
@@ -185,20 +186,21 @@ ggplot() +
                   x = fct_reorder(unittype, weight, median),
                   color = unittype,
                   fill = unittype),
-               alpha = 0.4,
+               alpha = 0.35,
                show.legend = FALSE) +
   geom_errorbar(data = channel_weight_summary, 
                 aes(x = unittype, 
                     ymin = mean - sd,
                     ymax = mean + sd,
                     color = unittype),
-                width = 0.1,
+                width = 0.15,
                 show.legend = FALSE) +
   geom_point(data = channel_weight_summary,
              aes(x = unittype,
                  y = mean,
                  color = unittype),
-             show.legend = FALSE) +
+             show.legend = FALSE,
+             size = 1.75) +
   scale_color_manual(values = c("steelblue4","darkslategray4", "royalblue3")) +
   scale_fill_manual(values = c("steelblue4", "darkslategray4", "royalblue3")) +
   theme_minimal() + 
@@ -210,17 +212,14 @@ ggplot() +
 
 ```
 
+***Figure 2.** Pacific giant salamander weight within each channel classification in 2017. Error bars demonstrate the mean weight and standard deviation within each classification.*
 
 
-```{r}
+```{r, include = FALSE}
+
 channel_aov <- aov(weight ~ unittype, data = channel_weight)
 
 summary(channel_aov)
-
-```
-
-
-```{r}
 
 # p = 0.0151, so this is statistically significant. But are they all the same? Or just 2? > comparing to type 3 anova
 
@@ -235,21 +234,15 @@ channel_aov_t3
 # F value statistic is ~ the same
 # Little confused about what this means
 
-```
-
-```{r}
-
 # Post-hoc Tukey's HSD
 
 TukeyHSD(channel_aov)
 
-```
-
-```{r}
 channel_weight_summary
+
 ```
 
-The mean weight for salamanders in side channels (5.68 ± 8.27g, mean ± standard deviation, n = 164) was lower than for those in cascades (7.52 ± 9.03g, n = 447) and pools (9.30 ± 13.62g, n = 76). Mean salamander weight differed significantly between salamanders in side channels and in pools (One-way ANOVA with post-hoc Tukey's HSD, F(2) = 4.22, p = 0.016), but did not differ significantly between those in pools and cascades (p = 0.28) or between those in side channels and cascades (p = 0.084).    
+The mean weight for salamanders in side channels (5.68 ± 8.27g, mean ± standard deviation, n = 164) was lower than for those in cascades (7.52 ± 9.03g, n = 447) and pools (9.30 ± 13.62g, n = 76). Mean salamander weight differed significantly between salamanders in side channels and in pools (One-way ANOVA with post-hoc Tukey's HSD, F(2) = 4.22, p = 0.016), but did not differ significantly between those in pools and cascades (p = 0.28) or between those in side channels and cascades (p = 0.084). 
 
 ### Summary
 
