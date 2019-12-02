@@ -44,10 +44,8 @@ Changes in salamander abundance from 1993 to 2017 were explored for each forest 
 
 #### 1a. Abundance in old growth and clear cut sections of Mack Creek
 
-<<<<<<< HEAD
-=======
 We analyzed changes in annual salamander abundance between 1993 and 2017 in clear cut and old growth forest (Figure 2).
->>>>>>> 98110ec78f454f36f73aa6ddcb3bb3f2be05e1da
+
 ```{r, fig.align = 'center'}
 # Part A : Annual salamander counts by year
 
@@ -77,14 +75,10 @@ Trends in salamander abundance were similar for both sections of Mack Creek duri
 
 #### 1b. Abundance in different channel classifications in 2017
 
-<<<<<<< HEAD
-***Table 1.** Pacific giant salamander abundance for different channel classifications in 2017. Number of observations and proportions are shown for clear cut and old growth sections of Mack Creek.*
-
-=======
 We analyzed salamander distribution among three different channel classifications (cascade, pool, and side channel) for both clear cut and old growth stream reaches (Table 1).
 
 ***Table 1.** Pacific giant salamander abundance for different stream channel classifications in 2017. Number of observations and proportions are shown for clear cut and old growth sections of Mack Creek.*
->>>>>>> 98110ec78f454f36f73aa6ddcb3bb3f2be05e1da
+
 ```{r}
 # Part B: 2017 salamander counts by channel classification
 
@@ -126,11 +120,7 @@ channel_chi <- chisq.test(channel_counts)
 
 Salamander abundance differed among the three channel classifications. In both clear cut and old growth sections, cascades had the greatest number of salamanders (`r channel_class_props$CC[1]` and `r channel_class_props$OG[1]`, respectively), followed by side channels (`r channel_class_props$CC[3]` and `r channel_class_props$OG[3]`, respectively). Pools had the fewest number of salamanders for both clear cut and old growth sections (`r channel_class_props$CC[2]` and`r channel_class_props$OG[2]`, respectively).
 
-<<<<<<< HEAD
-However, there is no significant effect of forest condition (clear cut and old growth) and the channel classification (cascade, pool, or side channel) where salamanders are found ($\chi^2$(`r channel_chi$parameter`) = `r round(channel_chi$statistic, 2)`, p = `r round(channel_chi$p.value,3)`).
-=======
 However, there is no significant association between forest condition (clear cut and old growth) and the channel classification (cascade, pool, or side channel) where salamanders are found ($\chi^2$ (`r channel_chi$parameter`) = `r round(channel_chi$statistic, 2)`, p = `r round(channel_chi$p.value,3)`).
->>>>>>> 98110ec78f454f36f73aa6ddcb3bb3f2be05e1da
 
 ### 2. Salamander weight 
 #### 2a. Weight in clear cut and old growth in 2017
