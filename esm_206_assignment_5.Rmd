@@ -26,7 +26,11 @@ salamanders <- read_csv("mack_creek_vertebrates.csv") %>%
 
 The Pacific giant salamander (*Dicamptodon tenebrosus*) is the largest amphibian species in the Pacific Northwest (Figure 1). Although it is not a threatened species, it relies on cold, clean stream habitat for food and reproduction ("Pacific Giant Salamander" n.d.). Logging threatens this habitat by removing canopy cover and increasing soil erosion, which result in warmer water and increased suspended sediment. Due to their sensitivity to such environmental changes, amphibian populations can be used as an indicator of riparian ecosystem health (Welsh and Ollivier, 1998). Pacific giant salamander populations have been monitored in both clear cut and intact old growth forest in Oregon State's H.J. Andrews Experimental Forest since 1993. In this study, we compare salamander abundance and weight in various channel types to explore the effect of logging on salamander populations.
 
+<center>
+
 ![**Figure 1**. Pacific giant salamander (*Dicamptodon tenebrosus*). Credit: [Jeffery Marsten *Wikimedia*](https://commons.wikimedia.org/wiki/File:Dicamptodon_tenebrosus_2.JPG)](pacific_giant_salamander.jpg)
+
+</center>
 
 ## Data and methods
 
@@ -39,7 +43,7 @@ Changes in salamander abundance from 1993 to 2017 were explored for each forest 
 ### 1. Salamander abundance
 
 #### 1a. Abundance in old growth and clear cut sections of Mack Creek
-```{r}
+```{r, fig.align = 'center'}
 # Part A : Annual salamander counts by year
 
 salamander_count <- salamanders %>% 
@@ -235,7 +239,7 @@ channel_weight_summary
 ```
 
 
-```{r}
+```{r, fig.align = 'center'}
 
 ## Figure 2. weight within each channel classification in 2017
 
