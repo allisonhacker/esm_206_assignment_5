@@ -22,16 +22,17 @@ salamanders <- read_csv("mack_creek_vertebrates.csv") %>%
   filter(species == "DITE")
 ```
 
-### Introduction
+## Introduction
 
 The Pacific giant salamander (*Dicamptodon tenebrosus*) is the largest amphibian species in the Pacific Northwest (Figure 1). Although it is not a threatened species, it relies on cold, clean stream habitat for food and reproduction ("Pacific Giant Salamander" n.d.). Logging threatens this habitat by removing canopy cover and increasing soil erosion, which result in warmer water and increased suspended sediment. Due to their sensitivity to such environmental changes, amphibian populations can be used as an indicator of riparian ecosystem health (Welsh and Ollivier, 1998). Pacific giant salamander populations have been monitored in both clear cut and intact old growth forest in Oregon State's H.J. Andrews Experimental Forest since 1993. In this study, we compare salamander abundance and weight in various channel types to explore the effect of logging on salamander populations.
 
 ![**Figure 1**. Pacific giant salamander (*Dicamptodon tenebrosus*). Credit: [Jeffery Marsten *Wikimedia*](https://commons.wikimedia.org/wiki/File:Dicamptodon_tenebrosus_2.JPG)](pacific_giant_salamander.jpg)
 
-### Data and Methods
-### Results
+## Data and Methods
+## Results
 
-#### 1. Salamander Abundance in forested versus logged sections of Mack Creek
+### 1. Salamander abundance
+#### 1a. Abundance in old growth and clear cut sections of Mack Creek
 ```{r}
 # Part A : Annual salamander counts by year
 
@@ -59,7 +60,7 @@ ggplot(salamander_count, aes(x = year, y = n))+
 
 Trends in salamander abundance between 1993 and 2017 were similar for both sections of Mack Creek. Until 2014, abundance of Pacific giant salamanders was greater in rach of Mack Creek in an old growth forest than in the section that flowed through a clear cut forest. From 2015 to 2017, salamander abundance was slightly higher in the clear cut reach than the forested reach.
 
-#### 2. Salamander abundance based on channel classification in 2017
+#### 1b. Abundance in different channel classifications in 2017
 
 **Table 1.** Pacific giant salamander abundance for different channel classifications in 2017. Number of observations and proportions are shown for clear cut and old growth sections of Mack Creek.
 ```{r}
@@ -105,7 +106,8 @@ Salamander abundance differed among the three channel classifications. In both c
 
 However, there is no significant effect of forest condition (clear cut and old growth) and the channel classification (cascade, pool, or side channel) where salamanders are found ($\chi^2$ (`r channel_chi$parameter`) = `r round(channel_chi$statistic, 2)`, p = `r round(channel_chi$p.value,3)`).
 
-#### 3. Salamander weight based in clear cut and old growth forest in 2017
+### 2. Salamander weight 
+#### 2a. Weight in clear cut and old growth in 2017
 
 ```{r, include = FALSE}
 
@@ -121,9 +123,15 @@ og_weight <- salamanders %>%
   filter(year == 2017, section == "OG") %>% 
   select(section, weight)
 
-# means
-mean_cc <- mean(cc_weight$weight)
-mean_og <- mean(og_weight$weight, na.rm = TRUE)
+# data summary
+
+section_weight_summary <- section_weight %>% 
+  group_by(section) %>% 
+  summarize(mean = mean(weight, na.rm = TRUE),
+            median = median(weight, na.rm = TRUE),
+            sd = sd(weight, na.rm = TRUE),
+            se = sd(weight, na.rm = TRUE) / sqrt(n()),
+            count = n())
 
 # exploratory data viz
 
@@ -135,9 +143,7 @@ ggplot(section_weight, aes(sample = weight,
                            color = section)) + 
   geom_qq()
 
-# Data does not seem normally distributed... however, the large sample sizes make it so the means will be normally distributed (Central Limit Theorem),so let's check for equal variance to ensure we can use a parametric test
-
-
+# Data does not seem normally distributed... however, the large sample sizes make it so the means will be normally distributed (Central Limit Theorem), so let's use a parametric test
 
 # t-test
 weight_ttest <- t.test(cc_weight$weight, og_weight$weight)
@@ -147,11 +153,13 @@ weight_ttest
 section_weight_es <- cohen.d(cc_weight$weight, og_weight$weight, na.rm = TRUE)
 section_weight_es
 
+section_weight_summary
+
 ```
 
-(two-sample, two-sided t-test)
+Mean salamander weight based in clear cut (7.78 ± 0.52, mean ± standard error, n = 368) and old growth (6.58 ± 0.49, n = 328) forest in 2017 did not differ significantly (two-sample, two-sided t-test, t(`r round(weight_ttest$parameter, 0)`) = `r round(weight_ttest$statistic, 1)`, *p* = `r round(weight_ttest$p.value, 3)`, Cohen's d = `r round(section_weight_es$estimate, 2)`).
 
-#### 4. Salamander weight based on channel classification in 2017
+#### 2b. Weight in different channel classifications in 2017
 
 ```{r, include = FALSE}
 
@@ -192,14 +200,36 @@ channel_weight_summary
 
 # The largest variance (185.6) is < 4x greater than the smallest variance (68.31), but they are pretty different so to be sure we will perform a Levene's Test for equal variance: 
 
-leveneTest(weight ~ unittype, data = channel_weight)
+levene_channel_weight <- leveneTest(weight ~ unittype, data = channel_weight)
 
 # Not significant (p = 0.09), we retain the null hypothesis of equal variance and will use a one-way ANOVA to compare
+
+channel_aov <- aov(weight ~ unittype, data = channel_weight)
+
+summary(channel_aov)
+
+channel_aov_outputs <- unlist(summary(channel_aov))
+
+channel_aov_outputs
+
+# p = 0.0151, so this is statistically significant. But are they all the same? Or just 2? > post-hoc Tukey's
+
+# Post-hoc Tukey's HSD
+
+tukey_channel_weight <- TukeyHSD(channel_aov)
+
+tukey_channel_weight
+
+# Only SC-P is statistically significant, P-C and SC-C are not
+
+channel_weight_summary
 
 ```
 
 
 ```{r}
+
+## Figure 2. weight within each channel classification in 2017
 
 # Labels to title facets
 
@@ -243,35 +273,7 @@ ggplot() +
 
 ***Figure 2.** Pacific giant salamander weight within each channel classification in 2017. Error bars demonstrate the mean weight and standard error within each classification.*
 
-
-```{r, include = FALSE}
-
-channel_aov <- aov(weight ~ unittype, data = channel_weight)
-
-summary(channel_aov)
-
-# p = 0.0151, so this is statistically significant. But are they all the same? Or just 2? > comparing to type 3 anova
-
-library(car)
-
-channel_lm <- lm(weight ~ unittype, data = channel_weight)
-
-channel_aov_t3 <- Anova(channel_lm)
-
-channel_aov_t3
-
-# F value statistic is ~ the same
-# Little confused about what this means
-
-# Post-hoc Tukey's HSD
-
-TukeyHSD(channel_aov)
-
-channel_weight_summary
-
-```
-
-The mean weight for salamanders in side channels (5.68 ± 0.65g, mean ± standard error, n = 164) was lower than for those in cascades (7.52 ± 0.43g, n = 447) and pools (9.30 ± 1.56g, n = 76). Mean salamander weight differed significantly between salamanders in side channels and in pools (One-way ANOVA with post-hoc Tukey's HSD, F(2) = 4.22, p = 0.016), but did not differ significantly between those in pools and cascades (p = 0.28) or between those in side channels and cascades (p = 0.084). 
+The mean weight for salamanders in side channels (5.68 ± 0.65g, mean ± standard error, n = 164) was lower than for those in cascades (7.52 ± 0.43g, n = 447) and pools (9.30 ± 1.56g, n = 76). Mean salamander weight differed significantly between salamanders in side channels and in pools  (one-way ANOVA with post-hoc Tukey's HSD, F(`r channel_aov_outputs[1]`, `r channel_aov_outputs[2]`) = `r round(channel_aov_outputs[7], 2)`, *p* = `r round(channel_aov_outputs[9],3)`), but did not differ significantly between those in pools and cascades (*p* = 0.28) or between those in side channels and cascades (*p* = 0.084). 
 
 ### Summary
 
