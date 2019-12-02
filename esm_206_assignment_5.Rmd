@@ -109,6 +109,10 @@ However, there is no significant effect of forest condition (clear cut and old g
 
 ```{r, include = FALSE}
 
+section_weight <- salamanders %>% 
+  filter(year == 2017) %>% 
+  select(section, weight)
+
 cc_weight <- salamanders %>% 
   filter(year == 2017, section == "CC") %>% 
   select(section, weight)
@@ -122,45 +126,52 @@ mean_cc <- mean(cc_weight$weight)
 mean_og <- mean(og_weight$weight, na.rm = TRUE)
 
 # exploratory data viz
-ggplot() +
-  geom_histogram(data = cc_weight, aes(x = weight),
-                 fill = "red", 
-                 bins = 50) +
-  geom_histogram(data = og_weight, aes(x = weight),
-                 fill = "blue",
-                 bins = 50)
 
-ggplot(data = cc_weight, aes(sample = weight))+
-  geom_qq()
-ggplot(data = og_weight, aes(sample = weight))+
+ggplot(section_weight, aes(x = weight,
+                                     fill = section)) +
+  geom_histogram(bins = 50)
+
+ggplot(section_weight, aes(sample = weight,
+                           color = section)) + 
   geom_qq()
 
-# data don't seem to be normally distributed, so probably shouldn't use the t-test?
+# Data does not seem normally distributed... however, the large sample sizes make it so the means will be normally distributed (Central Limit Theorem),so let's check for equal variance to ensure we can use a parametric test
+
+
 
 # t-test
 weight_ttest <- t.test(cc_weight$weight, og_weight$weight)
 weight_ttest
 
-# Mann-Whitney U
-weight_mwu <- wilcox.test(cc_weight$weight, og_weight$weight)
-weight_mwu
-
 # effect size
 section_weight_es <- cohen.d(cc_weight$weight, og_weight$weight, na.rm = TRUE)
 section_weight_es
+
 ```
+
+(two-sample, two-sided t-test)
 
 #### 4. Salamander weight based on channel classification in 2017
 
-```{r}
-library(ggbeeswarm)
-library(ggridges)
+```{r, include = FALSE}
+
+# Is data normally distributed? 
 
 channel_weight <- salamanders %>% 
   filter(year == "2017",
          unittype %in% c("C", "P", "SC")) %>% 
   select(unittype, weight, year) %>% 
   na.omit() 
+
+ggplot(channel_weight, aes(sample = weight,
+                           color = unittype))+
+  geom_qq()
+
+ggplot(channel_weight, aes(x = weight,
+                           fill = unittype)) + 
+  geom_histogram()
+
+# Data does not seem normally distributed... however, ANOVA is relatively robust to violations of normality, and the large sample sizes make it so the means will be normally distributed (Central Limit Theorem), so let's check for equal variance
 
 # Explore data by channel classification
 
@@ -170,7 +181,25 @@ channel_weight_summary <- channel_weight %>%
             median = median(weight),
             count = n(),
             sd = sd(weight),
-            se = sd(weight) / sqrt(n()))
+            se = sd(weight) / sqrt(n()),
+            var = var(weight))
+
+# Check for equal variances
+
+library(car)
+
+channel_weight_summary 
+
+# The largest variance (185.6) is < 4x greater than the smallest variance (68.31), but they are pretty different so to be sure we will perform a Levene's Test for equal variance: 
+
+leveneTest(weight ~ unittype, data = channel_weight)
+
+# Not significant (p = 0.09), we retain the null hypothesis of equal variance and will use a one-way ANOVA to compare
+
+```
+
+
+```{r}
 
 # Labels to title facets
 
@@ -178,7 +207,7 @@ channel_labels <- c(C = "Cascade",
                     P = "Pool",
                     SC = "Side Channel")
 
-# Violin/box plot
+# Violin/ errorbar plot
 
 ggplot() +
   geom_violin(data = channel_weight,
@@ -190,8 +219,8 @@ ggplot() +
                show.legend = FALSE) +
   geom_errorbar(data = channel_weight_summary, 
                 aes(x = unittype, 
-                    ymin = mean - sd,
-                    ymax = mean + sd,
+                    ymin = mean - se,
+                    ymax = mean + se,
                     color = unittype),
                 width = 0.15,
                 show.legend = FALSE) +
@@ -212,7 +241,7 @@ ggplot() +
 
 ```
 
-***Figure 2.** Pacific giant salamander weight within each channel classification in 2017. Error bars demonstrate the mean weight and standard deviation within each classification.*
+***Figure 2.** Pacific giant salamander weight within each channel classification in 2017. Error bars demonstrate the mean weight and standard error within each classification.*
 
 
 ```{r, include = FALSE}
@@ -242,7 +271,7 @@ channel_weight_summary
 
 ```
 
-The mean weight for salamanders in side channels (5.68 ± 8.27g, mean ± standard deviation, n = 164) was lower than for those in cascades (7.52 ± 9.03g, n = 447) and pools (9.30 ± 13.62g, n = 76). Mean salamander weight differed significantly between salamanders in side channels and in pools (One-way ANOVA with post-hoc Tukey's HSD, F(2) = 4.22, p = 0.016), but did not differ significantly between those in pools and cascades (p = 0.28) or between those in side channels and cascades (p = 0.084). 
+The mean weight for salamanders in side channels (5.68 ± 0.65g, mean ± standard error, n = 164) was lower than for those in cascades (7.52 ± 0.43g, n = 447) and pools (9.30 ± 1.56g, n = 76). Mean salamander weight differed significantly between salamanders in side channels and in pools (One-way ANOVA with post-hoc Tukey's HSD, F(2) = 4.22, p = 0.016), but did not differ significantly between those in pools and cascades (p = 0.28) or between those in side channels and cascades (p = 0.084). 
 
 ### Summary
 
