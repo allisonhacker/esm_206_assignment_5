@@ -28,13 +28,15 @@ The Pacific giant salamander (*Dicamptodon tenebrosus*) is the largest amphibian
 
 <center>
 
-![**Figure 1**. Pacific giant salamander (*Dicamptodon tenebrosus*). Credit: [Jeffery Marsten *Wikimedia*](https://commons.wikimedia.org/wiki/File:Dicamptodon_tenebrosus_2.JPG)](pacific_giant_salamander.jpg)
+![](pacific_giant_salamander.jpg)
 
 </center>
 
+***Figure 1**. Pacific giant salamander (Dicamptodon tenebrosus). Credit: [Jeffery Marsten, Wikimedia](https://commons.wikimedia.org/wiki/File:Dicamptodon_tenebrosus_2.JPG)*
+
 ## Data and methods
 
-Pacific giant salamander data were provided by the [Aquatic Vertebrate Population Study](https://portal.lternet.edu/nis/mapbrowse?packageid=knb-lter-and.4027.12) in Mack Creek, Andrews Experimental Forest (Gregory, 2016). Salamander abundance (individuals) and weight (grams) were determined by annual surveys in a section of clear cut forest (ca. 1963; clear cut) and a 500-year old coniferous forest (old growth). We explored information within three channel classifications: cascades, pools, and side channels. Data collection for Pacific giant salamanders began in 1993 and is ongoing.
+Pacific giant salamander data were provided by the [Aquatic Vertebrate Population Study](https://portal.lternet.edu/nis/mapbrowse?packageid=knb-lter-and.4027.12) in Mack Creek, Andrews Experimental Forest, Oregon (Gregory, 2016). Salamander abundance (individuals) and weight (grams) were determined by annual surveys in a section of clear cut forest (ca. 1963; clear cut) and a 500-year old coniferous forest (old growth). We explored information within three channel classifications: cascades, pools, and side channels. Data collection for Pacific giant salamanders began in 1993 and is ongoing.
 
 Changes in salamander abundance from 1993 to 2017 were explored for each forest section. Abundance was analyzed for 2017 within each channel classification using a chi-square test for independence (alpha = 0.05 throughout). We analyzed differences in mean salamander weight within each forest section using a two-sample, two-sided t-test and within channel classifications with a one-way ANOVA and post-hoc Tukey's HSD. R software (version 3.5.1) and RStudio (version 1.2.1335) were used for data analysis and figure generation.
 
@@ -71,11 +73,11 @@ ggplot(salamander_count, aes(x = year, y = n))+
 
 ***Figure 2.** Pacific giant salamander abundance (1993-2017). The annual number of salamander observations is shown for an old growth coniferous forest (green) and a clear cut forest (brown) for all years that observations were recorded.*
 
-Trends in salamander abundance were similar for both sections of Mack Creek during between 1993 and 2017. Until 2014, abundance of Pacific giant salamanders was greater in the old growth reach of Mack than in the clear cut reach. From 2015 to 2017, salamander abundance was slightly higher in the clear cut reach than the old growth reach.
+Trends in salamander abundance were similar for both sections of Mack Creek during between 1993 and 2017. Until 2014, the abundance of Pacific giant salamanders was greater in the old growth reach than in the clear cut reach. From 2015 to 2017, salamander abundance was slightly higher in the clear cut reach than the old growth reach.
 
 #### 1b. Abundance in different channel classifications in 2017
 
-We analyzed salamander distribution among three different channel classifications (cascade, pool, and side channel) for both clear cut and old growth stream reaches (Table 1).
+We analyzed salamander abundance among three different channel classifications (cascade, pool, and side channel) for both clear cut and old growth stream reaches in 2017 (Table 1).
 
 ***Table 1.** Pacific giant salamander abundance for different stream channel classifications in 2017. Number of observations and proportions are shown for clear cut and old growth sections of Mack Creek.*
 
@@ -118,7 +120,7 @@ channel_chi <- chisq.test(channel_counts)
 #channel_chi
 ```
 
-Salamander abundance differed among the three channel classifications. In both clear cut and old growth sections, cascades had the greatest number of salamanders (`r channel_class_props$CC[1]` and `r channel_class_props$OG[1]`, respectively), followed by side channels (`r channel_class_props$CC[3]` and `r channel_class_props$OG[3]`, respectively). Pools had the fewest number of salamanders for both clear cut and old growth sections (`r channel_class_props$CC[2]` and`r channel_class_props$OG[2]`, respectively).
+Salamander abundance differed among the three channel classifications. In both clear cut and old growth sections, cascades had the greatest number of salamanders ( `r channel_class_props$CC[1]` and `r channel_class_props$OG[1]`, respectively), followed by side channels (`r channel_class_props$CC[3]` and `r channel_class_props$OG[3]`, respectively). Pools had the fewest number of salamanders for both clear cut and old growth sections (`r channel_class_props$CC[2]` and`r channel_class_props$OG[2]`, respectively).
 
 However, there is no significant association between forest condition (clear cut and old growth) and the channel classification (cascade, pool, or side channel) where salamanders are found ($\chi^2$ (`r channel_chi$parameter`) = `r round(channel_chi$statistic, 2)`, p = `r round(channel_chi$p.value,3)`).
 
