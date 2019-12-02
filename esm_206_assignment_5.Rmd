@@ -262,8 +262,8 @@ ggplot() +
                  color = unittype),
              show.legend = FALSE,
              size = 1.75) +
-  scale_color_manual(values = c("steelblue4","darkslategray4", "royalblue3")) +
-  scale_fill_manual(values = c("steelblue4", "darkslategray4", "royalblue3")) +
+  scale_color_manual(values = c("olivedrab4", "yellow4", "darkolivegreen")) +
+  scale_fill_manual(values = c("olivedrab4", "darkkhaki", "darkolivegreen")) +
   theme_minimal() + 
   theme(panel.grid.minor = element_blank()) +
   labs(y = "Weight (g)",
