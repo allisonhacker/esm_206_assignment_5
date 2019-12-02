@@ -281,7 +281,7 @@ ggplot() +
 
 The mean weight for salamanders in side channels (5.68 ± 0.65g, mean ± standard error, n = 164) was lower than for those in cascades (7.52 ± 0.43g, n = 447) and pools (9.30 ± 1.56g, n = 76). Mean salamander weight differed significantly between salamanders in side channels and in pools  (one-way ANOVA with post-hoc Tukey's HSD, F(`r channel_aov_outputs[1]`, `r channel_aov_outputs[2]`) = `r round(channel_aov_outputs[7], 2)`, *p* = `r round(channel_aov_outputs[9],3)`), but did not differ significantly between those in pools and cascades (*p* = 0.28) or between those in side channels and cascades (*p* = 0.084). 
 
-However, due to not perfectly normal distributions and significant outliers, it is possible examining medians, rather than means, is better for comparing salamander weights in this dataset. Alternative, non-parametric analyses such as Whitney-Mann (for two-sample analysis) and Kruskal-Wallis (for three-sample) should be explored. 
+However, due to not perfectly normal distributions and significant outliers, it is possible examining medians, rather than means, would be better for comparing salamander weights in this dataset. Alternative, non-parametric analyses such as Whitney-Mann (for two-sample analysis) and Kruskal-Wallis (for three-sample) should be explored. 
 
 ### Summary
 
