@@ -6,7 +6,9 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
 
 # Attach packages
 library(tidyverse)
@@ -166,7 +168,8 @@ channel_weight_summary <- channel_weight %>%
   group_by(unittype) %>% 
   summarize(mean = mean(weight),
             median = median(weight),
-            count = n()) 
+            count = n(),
+            sd = sd(weight)) 
 
 # Labels to title facets
 
@@ -176,16 +179,26 @@ channel_labels <- c(C = "Cascade",
 
 # Violin/box plot
 
-ggplot(channel_weight, aes(y = weight,
-                           x = fct_reorder(unittype, weight, median))) +
-  geom_violin(aes(color = unittype,
+ggplot() +
+  geom_violin(data = channel_weight,
+              aes(y = weight,
+                  x = fct_reorder(unittype, weight, median),
+                  color = unittype,
                   fill = unittype),
-               alpha = 0.5,
+               alpha = 0.4,
                show.legend = FALSE) +
-  geom_boxplot(aes(color = unittype),
-               show.legend = FALSE,
-               alpha = 0.8,
-               width = 0.14) +
+  geom_errorbar(data = channel_weight_summary, 
+                aes(x = unittype, 
+                    ymin = mean - sd,
+                    ymax = mean + sd,
+                    color = unittype),
+                width = 0.1,
+                show.legend = FALSE) +
+  geom_point(data = channel_weight_summary,
+             aes(x = unittype,
+                 y = mean,
+                 color = unittype),
+             show.legend = FALSE) +
   scale_color_manual(values = c("steelblue4","darkslategray4", "royalblue3")) +
   scale_fill_manual(values = c("steelblue4", "darkslategray4", "royalblue3")) +
   theme_minimal() + 
@@ -197,13 +210,46 @@ ggplot(channel_weight, aes(y = weight,
 
 ```
 
-```{r}
 
-channel_weight_summary
+
+```{r}
+channel_aov <- aov(weight ~ unittype, data = channel_weight)
+
+summary(channel_aov)
 
 ```
 
 
+```{r}
+
+# p = 0.0151, so this is statistically significant. But are they all the same? Or just 2? > comparing to type 3 anova
+
+library(car)
+
+channel_lm <- lm(weight ~ unittype, data = channel_weight)
+
+channel_aov_t3 <- Anova(channel_lm)
+
+channel_aov_t3
+
+# F value statistic is ~ the same
+# Little confused about what this means
+
+```
+
+```{r}
+
+# Post-hoc Tukey's HSD
+
+TukeyHSD(channel_aov)
+
+```
+
+```{r}
+channel_weight_summary
+```
+
+The mean weight for salamanders in side channels (5.68 ± 8.27g, mean ± standard deviation, n = 164) was lower than for those in cascades (7.52 ± 9.03g, n = 447) and pools (9.30 ± 13.62g, n = 76). Mean salamander weight differed significantly between salamanders in side channels and in pools (One-way ANOVA with post-hoc Tukey's HSD, F(2) = 4.22, p = 0.016), but did not differ significantly between those in pools and cascades (p = 0.28) or between those in side channels and cascades (p = 0.084).    
 
 ### Summary
 
