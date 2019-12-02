@@ -68,7 +68,7 @@ ggplot(salamander_count, aes(x = year, y = n))+
 
 ***Figure 2.** Pacific giant salamander abundance (1993-2017). The annual number of observations from an old growth coniferous forest (green) and a clear cut forest (brown) are shown for all years that observations were recorded.*
 
-Trends in salamander abundance between 1993 and 2017 were similar for both sections of Mack Creek. Until 2014, abundance of Pacific giant salamanders was greater in rach of Mack Creek in an old growth forest than in the section that flowed through a clear cut forest. From 2015 to 2017, salamander abundance was slightly higher in the clear cut reach than the forested reach.
+Trends in salamander abundance between 1993 and 2017 were similar for both sections of Mack Creek. Until 2014, abundance of Pacific giant salamanders was greater in the old growth reach of Mack than in the clear cut reach. From 2015 to 2017, salamander abundance was slightly higher in the clear cut reach than the old growth reach.
 
 #### 1b. Abundance in different channel classifications in 2017
 
