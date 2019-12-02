@@ -230,7 +230,7 @@ channel_aov_outputs
 
 tukey_channel_weight <- TukeyHSD(channel_aov)
 
-tukey_channel_weight
+tukey_df <- data.frame(tukey_channel_weight$unittype)
 
 # Only SC-P is statistically significant, P-C and SC-C are not
 
@@ -279,9 +279,16 @@ ggplot() +
 
 ***Figure 3.** Pacific giant salamander weight within each channel classification in 2017. Error bars demonstrate the mean weight and standard error within each classification.*
 
-The mean weight for salamanders in side channels (5.68 ± 0.65g, mean ± standard error, n = 164) was lower than for those in cascades (7.52 ± 0.43g, n = 447) and pools (9.30 ± 1.56g, n = 76). Mean salamander weight differed significantly between salamanders in side channels and in pools  (one-way ANOVA with post-hoc Tukey's HSD, F(`r channel_aov_outputs[1]`, `r channel_aov_outputs[2]`) = `r round(channel_aov_outputs[7], 2)`, *p* = `r round(channel_aov_outputs[9],3)`), but did not differ significantly between those in pools and cascades (*p* = 0.28) or between those in side channels and cascades (*p* = 0.084). 
+```{r}
 
-However, due to not perfectly normal distributions and significant outliers, it is possible examining medians, rather than means, would be better for comparing salamander weights in this dataset. Alternative, non-parametric analyses such as Whitney-Mann (for two-sample analysis) and Kruskal-Wallis (for three-sample) should be explored. 
+channel_weight_summary
+
+```
+
+
+The mean weight for salamanders in side channels (`r round(channel_weight_summary$mean[3], 2)` ± `r round(channel_weight_summary$se[3], 2)`g, mean ± standard error, n = `r round(channel_weight_summary$count[3], 2)`) was lower than for those in cascades (`r round(channel_weight_summary$mean[1], 2)` ± `r round(channel_weight_summary$se[1], 2)`g, n = `r round(channel_weight_summary$count[1], 2)`) and pools (`r round(channel_weight_summary$mean[2], 2)` ± `r round(channel_weight_summary$se[2], 2)`, n = `r round(channel_weight_summary$count[2], 2)`). Mean salamander weight differed significantly between the three channel classifications (one-way ANOVA F(`r channel_aov_outputs[1]`, `r channel_aov_outputs[2]`) = `r round(channel_aov_outputs[7], 2)`, *p* = `r round(channel_aov_outputs[9],3)`). Pair-wise comparisons revealed that weights varied significantly between salamanders in side channels and in pools (post-hoc Tukey's HSD, *p* = `r round(tukey_df$p.adj[3], 3)`), but did not differ significantly between those in pools and cascades (*p* = `r round(tukey_df$p.adj[1], 2)`) or between those in side channels and cascades (*p* = `r round(tukey_df$p.adj[2], 3)`). 
+
+However, due to significant outliers, it is possible examining medians, rather than means, would be better for comparing salamander weights in this dataset. Alternative, non-parametric analyses such as Whitney-Mann (for two-sample analysis) and Kruskal-Wallis (for three-sample) should be explored. 
 
 ### Summary
 
