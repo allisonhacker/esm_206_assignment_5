@@ -112,7 +112,7 @@ channel_chi <- chisq.test(channel_counts)
 #channel_chi
 ```
 
-Salamander abundance differed among the three channel classifications. In both clear cut and old growth sections, cascades had the greatest number of salamanders (247 (67.1%)) and 201 (62.8%)), followed by side channels (90 (24.5%)) and 74 (23.1%)). Pools had the fewest number of salamanders for clear cut (31 (8.4%)) and old growth (45 (14.1%)) creek sections.
+Salamander abundance differed among the three channel classifications. In both clear cut and old growth sections, cascades had the greatest number of salamanders (`r channel_class_props$CC[1]` and `r channel_class_props$OG[1]`, respectively), followed by side channels (`r channel_class_props$CC[3]` and `r channel_class_props$OG[3]`, respectively). Pools had the fewest number of salamanders for both clear cut (`r channel_class_props$CC[2]`) and old growth (`r channel_class_props$OG[2]`) creek sections.
 
 However, there is no significant effect of forest condition (clear cut and old growth) and the channel classification (cascade, pool, or side channel) where salamanders are found ($\chi^2$ (`r channel_chi$parameter`) = `r round(channel_chi$statistic, 2)`, p = `r round(channel_chi$p.value,3)`).
 
